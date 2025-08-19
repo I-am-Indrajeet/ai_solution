@@ -1,6 +1,8 @@
 # AI Solution Platform
 
 A feature-rich Django web application for managing services, blogs, events, testimonials, team, gallery, portfolios, and more, with a modern admin dashboard and real-time analytics.
+![Alt text](https://github.com/I-am-Indrajeet/ai_solution/blob/34237bd5b0be37d5c8dd05b4ab38518308e63af4/Screenshot%202025-01-02%20221501.png)
+
 
 ## Features
 
