@@ -1,0 +1,104 @@
+/* Service Hero Section */
+.service-hero {
+    padding: 5rem 0;
+    background: linear-gradient(to right, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.service-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #e7f5ff;
+    color: #1971c2;
+    border-radius: 25px;
+    font-weight: 500;
+}
+
+/* Service Description */
+.service-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #495057;
+}
+
+/* Service Features */
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: #e7f5ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.feature-icon i {
+    font-size: 1.5rem;
+    color: #1971c2;
+}
+
+.feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #343a40;
+}
+
+/* Benefits Section */
+.benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.benefit-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.benefit-item i {
+    font-size: 2rem;
+    color: #1971c2;
+}
+
+.benefit-item h4 {
+    margin-bottom: 0.5rem;
+    color: #343a40;
+}
+
+.benefit-item p {
+    margin-bottom: 0;
+    color: #6c757d;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(45deg, #1971c2 0%, #4dabf7 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .service-hero {
+        padding: 3rem 0;
+    }
+    
+    .benefit-item {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+} 

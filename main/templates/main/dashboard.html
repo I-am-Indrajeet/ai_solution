@@ -1,0 +1,447 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - AI Solution{% endblock %}
+
+{% block content %}
+<div class="dashboard-container py-5">
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="dashboard-title" data-aos="fade-up">Analytics Dashboard</h2>
+            </div>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3" data-aos="fade-up">
+                <div class="stats-card bg-primary text-white" onclick="showStatsDetail('clients')">
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 class="stats-number" id="total-clients">0</h3>
+                        <p class="stats-label">Total Clients</p>
+                        <small class="stats-detail" id="clients-detail"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stats-card bg-success text-white" onclick="showStatsDetail('events')">
+                    <div class="stats-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 class="stats-number" id="upcoming-events">0</h3>
+                        <p class="stats-label">Upcoming Events</p>
+                        <small class="stats-detail" id="events-detail"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stats-card bg-info text-white" onclick="showStatsDetail('posts')">
+                    <div class="stats-icon">
+                        <i class="fas fa-blog"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 class="stats-number" id="total-posts">0</h3>
+                        <p class="stats-label">Blog Posts</p>
+                        <small class="stats-detail" id="posts-detail"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stats-card bg-warning text-white" onclick="showStatsDetail('ratings')">
+                    <div class="stats-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stats-info">
+                        <h3 class="stats-number" id="avg-rating">0</h3>
+                        <p class="stats-label">Avg. Rating</p>
+                        <small class="stats-detail" id="ratings-detail"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <!-- Service Distribution -->
+            <div class="col-md-12" data-aos="fade-up">
+                <div class="chart-card">
+                    <h4 class="chart-title">Service Distribution</h4>
+                    <canvas id="servicesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row of Charts -->
+        <div class="row mb-4">
+            <!-- Blog Performance -->
+            <div class="col-md-6" data-aos="fade-up">
+                <div class="chart-card">
+                    <h4 class="chart-title">Blog Performance</h4>
+                    <canvas id="blogChart"></canvas>
+                </div>
+            </div>
+            <!-- Testimonial Ratings -->
+            <div class="col-md-6" data-aos="fade-up">
+                <div class="chart-card">
+                    <h4 class="chart-title">Testimonial Ratings</h4>
+                    <canvas id="ratingsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Table -->
+        <div class="row">
+            <div class="col-12" data-aos="fade-up">
+                <div class="table-card">
+                    <h4 class="chart-title">Recent Activity</h4>
+                    <div class="table-responsive">
+                        <table class="table" id="recentActivityTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Styles -->
+<style>
+    .dashboard-container {
+        background-color: #f8f9fa;
+    }
+
+    .dashboard-title {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-card {
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stats-icon {
+        font-size: 2rem;
+        margin-right: 1rem;
+    }
+
+    .stats-number {
+        font-size: 1.8rem;
+        margin-bottom: 0;
+    }
+
+    .stats-label {
+        margin-bottom: 0;
+        opacity: 0.9;
+    }
+
+    .chart-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .table-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-detail {
+        display: none;
+        font-size: 0.8rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    .upcoming-events-list {
+        margin-top: 1rem;
+    }
+
+    .event-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    .event-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .event-item small {
+        display: block;
+        margin-top: 0.25rem;
+    }
+
+    .event-item i {
+        width: 16px;
+        margin-right: 4px;
+    }
+</style>
+
+<!-- Dashboard Scripts -->
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Real-time WebSocket connection
+    let ws;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    
+    function connectWebSocket() {
+        ws = new WebSocket(`ws://${window.location.host}/ws/dashboard/`);
+        
+        ws.onopen = function() {
+            console.log('Connected to dashboard WebSocket');
+            reconnectAttempts = 0;
+            showConnectionStatus('success', 'Connected to real-time updates');
+        };
+        
+        ws.onclose = function() {
+            console.log('Dashboard WebSocket closed');
+            showConnectionStatus('warning', 'Connection lost. Reconnecting...');
+            if (reconnectAttempts < maxReconnectAttempts) {
+                reconnectAttempts++;
+                setTimeout(connectWebSocket, 3000);
+            } else {
+                showConnectionStatus('danger', 'Connection failed. Please refresh the page.');
+            }
+        };
+        
+        ws.onerror = function(err) {
+            console.error('WebSocket error:', err);
+            showConnectionStatus('danger', 'Connection error occurred');
+        };
+        
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            updateDashboard(data);
+        };
+    }
+    
+    // Initial connection
+    connectWebSocket();
+    
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (ws) {
+            ws.close();
+        }
+    });
+
+    let currentStatsDetail = null;
+    
+    function showStatsDetail(type) {
+        const details = {
+            clients: document.getElementById('clients-detail'),
+            events: document.getElementById('events-detail'),
+            posts: document.getElementById('posts-detail'),
+            ratings: document.getElementById('ratings-detail')
+        };
+        
+        // Hide previously shown detail
+        if (currentStatsDetail && currentStatsDetail !== details[type]) {
+            currentStatsDetail.style.display = 'none';
+        }
+        
+        // Special handling for events to show upcoming events list
+        if (type === 'events') {
+            const eventsDetail = details[type];
+            if (eventsDetail.style.display !== 'block') {
+                // Create events list only when showing
+                const eventsList = document.createElement('div');
+                eventsList.className = 'upcoming-events-list';
+                currentEventsData.forEach(event => {
+                    const eventItem = document.createElement('div');
+                    eventItem.className = 'event-item';
+                    eventItem.innerHTML = `
+                        <strong>${event.title}</strong><br>
+                        <small>
+                            <i class="fas fa-calendar"></i> ${event.date}<br>
+                            <i class="fas fa-map-marker-alt"></i> ${event.location}<br>
+                            <i class="fas fa-tag"></i> ${event.event_type}
+                        </small>
+                    `;
+                    eventsList.appendChild(eventItem);
+                });
+                eventsDetail.innerHTML = '';
+                eventsDetail.appendChild(eventsList);
+            }
+        }
+
+        // Toggle current detail
+        if (details[type].style.display === 'block') {
+            details[type].style.display = 'none';
+            currentStatsDetail = null;
+        } else {
+            details[type].style.display = 'block';
+            currentStatsDetail = details[type];
+        }
+    }
+
+    // Store current events data globally
+    let currentEventsData = [];
+
+    function updateDashboard(data) {
+        // Update quick stats
+        document.getElementById('total-clients').textContent = data.total_clients;
+        document.getElementById('upcoming-events').textContent = data.upcoming_events;
+        document.getElementById('total-posts').textContent = data.total_posts;
+        document.getElementById('avg-rating').textContent = data.avg_rating.toFixed(1);
+
+        // Store events data for detail view
+        currentEventsData = data.stats_details.next_events;
+
+        // Update details
+        document.getElementById('clients-detail').textContent = 
+            `From ${data.stats_details.unique_companies} different companies`;
+        document.getElementById('posts-detail').textContent = 
+            `Avg. read time: ${data.stats_details.avg_read_time} min`;
+        document.getElementById('ratings-detail').textContent = 
+            `Based on ${data.stats_details.total_ratings} reviews`;
+
+        // Update charts
+        updateServicesChart(data.services_data);
+        updateBlogChart(data.blog_data);
+        updateRatingsChart(data.ratings_data);
+        updateRecentActivity(data.recent_activity);
+    }
+
+    // Initialize Charts
+    const servicesChart = new Chart(document.getElementById('servicesChart'), {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    '#3498db',
+                    '#2ecc71',
+                    '#e74c3c',
+                    '#f1c40f'
+                ]
+            }]
+        }
+    });
+
+    const blogChart = new Chart(document.getElementById('blogChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Views',
+                data: [],
+                backgroundColor: '#3498db'
+            }]
+        }
+    });
+
+    const ratingsChart = new Chart(document.getElementById('ratingsChart'), {
+        type: 'bar',
+        data: {
+            labels: ['1★', '2★', '3★', '4★', '5★'],
+            datasets: [{
+                label: 'Ratings Distribution',
+                data: [],
+                backgroundColor: '#2ecc71'
+            }]
+        }
+    });
+
+    function updateServicesChart(data) {
+        // Clear existing data
+        servicesChart.data.labels.length = 0;
+        servicesChart.data.datasets[0].data.length = 0;
+        
+        // Add new data
+        servicesChart.data.labels = data.labels;
+        servicesChart.data.datasets[0].data = data.values;
+        servicesChart.update();
+    }
+
+    function updateBlogChart(data) {
+        // Clear existing data
+        blogChart.data.labels.length = 0;
+        blogChart.data.datasets[0].data.length = 0;
+        
+        // Add new data
+        blogChart.data.labels = data.labels;
+        blogChart.data.datasets[0].data = data.values;
+        blogChart.update();
+    }
+
+    function updateRatingsChart(data) {
+        // Clear existing data
+        ratingsChart.data.datasets[0].data.length = 0;
+        
+        // Add new data
+        ratingsChart.data.datasets[0].data = data.values;
+        ratingsChart.update();
+    }
+
+    function updateRecentActivity(activities) {
+        const tbody = document.querySelector('#recentActivityTable tbody');
+        tbody.innerHTML = '';
+        
+        activities.forEach(activity => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${activity.date}</td>
+                <td>${activity.type}</td>
+                <td>${activity.description}</td>
+                <td><span class="badge bg-${activity.status_color}">${activity.status}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function showConnectionStatus(type, message) {
+        const statusDiv = document.getElementById('connection-status');
+        if (!statusDiv) return;
+        
+        statusDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        statusDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+    }
+</script>
+{% endblock %}
+{% endblock %} 

@@ -1,0 +1,134 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}About Us - AI Solution{% endblock %}
+
+{% block content %}
+<div class="about-section py-5">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h1 class="display-4 mb-4" data-aos="fade-up">About Us</h1>
+                <div class="divider mb-4"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="{% static 'images/about-us.jpg' %}" alt="AI Solutions Office" class="img-fluid rounded shadow-lg mb-4 mb-lg-0">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 class="mb-4">Welcome to AI-Solutions</h2>
+                <p class="lead mb-4">Where innovation meets action. Based in the heart of Sunderland, we are a dynamic start-up redefining how industries approach the digital employee experience.</p>
+                <p class="mb-4">Our mission is simple yet ambitious: to empower businesses with cutting-edge AI solutions that revolutionize design, engineering, and innovation.</p>
+            </div>
+        </div>
+
+        <!-- Our Belief Section -->
+        <div class="row mb-5">
+            <div class="col-12" data-aos="fade-up">
+                <div class="belief-section p-5 bg-light rounded shadow-sm">
+                    <h3 class="mb-4">Our Belief</h3>
+                    <p>At AI-Solutions, we believe in the power of technology to transform workplaces. Our AI-powered virtual assistant sets us apart, offering real-time responses to your inquiries and affordable, AI-driven prototyping solutions to bring your ideas to life.</p>
+                    <p>Whether you're tackling challenges in efficiency, creativity, or employee engagement, we're here to help you stay ahead.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission Section -->
+        <div class="row mb-5">
+            <div class="col-12" data-aos="fade-up">
+                <div class="mission-section text-center">
+                    <h3 class="mb-4">Our Mission</h3>
+                    <p class="lead">We are passionate about supporting people at work and delivering tools that drive productivity and satisfaction. With a commitment to innovation and excellence, AI-Solutions is on a mission to make a lasting global impact, one workplace at a time.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="row">
+            <div class="col-12" data-aos="fade-up">
+                <div class="contact-section p-5 bg-primary text-white rounded">
+                    <h3 class="mb-4">Contact Us</h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Address</h5>
+                                    <p class="mb-0">1 Innovation Way, Sunderland, SR1 3NX, United Kingdom</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-phone fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Phone</h5>
+                                    <p class="mb-0">+44 191 555 0123</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-envelope fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Email</h5>
+                                    <p class="mb-0">info@ai-solutions.co.uk</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.about-section {
+    background-color: #ffffff;
+}
+
+.divider {
+    width: 50px;
+    height: 3px;
+    background-color: #007bff;
+    margin: 0 auto;
+}
+
+.belief-section, .mission-section {
+    border-radius: 15px;
+}
+
+.contact-section {
+    border-radius: 15px;
+}
+
+.lead {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.mission-section {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-section i {
+    opacity: 0.9;
+}
+
+.contact-section h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.contact-section p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+</style>
+{% endblock %} 

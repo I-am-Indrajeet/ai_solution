@@ -1,0 +1,225 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Blog Posts | AI Solution{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="blog-hero mb-5 text-center py-5 bg-light rounded">
+        <h1 class="display-4 mb-3">Our Latest Insights</h1>
+        <p class="lead mb-4">Discover the latest trends, insights, and innovations in AI technology</p>
+        <div class="blog-filters mb-4">
+            <div class="btn-group" role="group">
+                <a href="{% url 'main:blog_list' %}" 
+                   class="btn btn-outline-primary {% if not request.GET.category %}active{% endif %}">
+                    All Posts
+                </a>
+                {% for category in categories %}
+                <a href="?category={{ category.slug }}" 
+                   class="btn btn-outline-primary {% if request.GET.category == category.slug %}active{% endif %}">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Search and Filter Section -->
+    <div class="search-filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="blogSearch" placeholder="Search blog posts...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm hover-effect">
+                {% if post.featured_image %}
+                <div class="card-img-wrapper">
+                    <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}"
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-img-overlay d-flex align-items-start justify-content-end">
+                        {% for category in post.categories.all|slice:":1" %}
+                        <span class="badge bg-primary">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text text-muted">{{ post.meta_description|truncatewords:25 }}</p>
+                    
+                    <div class="post-meta mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            <span>{{ post.published_date|date:"F d, Y" }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-user text-primary me-2"></i>
+                            <span>{{ post.author.get_full_name|default:post.author.username }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            <span>{{ post.read_time }} min read</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="post-stats">
+                            <span class="me-3"><i class="fas fa-eye text-muted"></i> {{ post.views }}</span>
+                            <span><i class="fas fa-comments text-muted"></i> {{ post.comments.count }}</span>
+                        </div>
+                        <a href="{% url 'main:blog_detail' post.pk %}" class="btn btn-outline-primary">
+                            Read More <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No blog posts available at the moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% include 'main/includes/pagination.html' %}
+</div>
+
+<style>
+.hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-img-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img-wrapper img {
+    transition: transform 0.3s ease;
+}
+
+.card-img-wrapper:hover img {
+    transform: scale(1.05);
+}
+
+.blog-filters .btn-group {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.post-meta {
+    font-size: 0.9rem;
+}
+
+.post-stats {
+    font-size: 0.9rem;
+}
+
+.btn-outline-primary.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.blog-filters .btn-group {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.blog-filters .btn {
+    margin: 0.25rem;
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.blog-filters .btn:hover {
+    transform: translateY(-2px);
+}
+
+#categoryFilter {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    border-color: #dee2e6;
+    transition: all 0.3s ease;
+}
+
+#categoryFilter:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Category filter functionality
+    const categoryFilter = document.getElementById('categoryFilter');
+    categoryFilter.addEventListener('change', function() {
+        const selectedCategory = this.value;
+        if (selectedCategory) {
+            window.location.href = `?category=${selectedCategory}`;
+        } else {
+            window.location.href = '{% url "main:blog_list" %}';
+        }
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('blogSearch');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const searchQuery = this.value.trim();
+            const currentUrl = new URL(window.location.href);
+            
+            if (searchQuery) {
+                currentUrl.searchParams.set('search', searchQuery);
+            } else {
+                currentUrl.searchParams.delete('search');
+            }
+            
+            window.location.href = currentUrl.toString();
+        }, 500);
+    });
+
+    // Set search input value from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+    if (searchQuery) {
+        searchInput.value = searchQuery;
+    }
+});
+</script>
+{% endblock %} 

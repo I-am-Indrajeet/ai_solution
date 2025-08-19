@@ -1,0 +1,74 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Login - AI Solution{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Login</h2>
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Your username and password didn't match. Please try again.
+                    </div>
+                    {% endif %}
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" required id="username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required id="password">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-body {
+    padding: 2.5rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.btn-primary {
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.alert {
+    border-radius: 8px;
+}
+</style>
+{% endblock %} 

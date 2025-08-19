@@ -1,0 +1,216 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Our Expert Team | AI Solutions{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<style>
+    .team-hero {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        padding: 100px 0;
+        margin-bottom: 80px;
+    }
+
+    .team-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .team-member-photo {
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .team-card:hover .team-member-photo {
+        transform: scale(1.05);
+    }
+
+    .social-links a {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        margin: 0 5px;
+    }
+
+    .social-links a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .team-stats {
+        background: #f8f9fa;
+        padding: 80px 0;
+        margin: 80px 0;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 30px;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .team-hero h1,
+    .team-hero .lead {
+        color: #007bff !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Team Hero Section -->
+<section class="team-hero text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4 text-primary">Meet Our Expert Team</h1>
+                <p class="lead mb-4 text-primary">We're a diverse group of passionate individuals working together to revolutionize AI solutions.</p>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <img src="{% static 'images/team-hero.svg' %}" alt="Team Hero" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Team Members Grid -->
+    <div class="row g-4">
+        {% for member in team_members %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 200 %}">
+            <div class="team-card h-100">
+                {% if member.photo %}
+                <div class="position-relative">
+                    <img src="{{ member.photo.url }}" class="team-member-photo w-100" alt="{{ member.name }}">
+                    <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                        <h5 class="text-white mb-0">{{ member.name }}</h5>
+                        <p class="text-white-50 mb-0">{{ member.position }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{ member.bio }}</p>
+                    
+                    {% if member.expertise %}
+                    <div class="expertise mb-3">
+                        {% for skill in member.expertise.all %}
+                        <span class="badge bg-primary me-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="social-links mt-3">
+                        {% if member.email %}
+                        <a href="mailto:{{ member.email }}" class="btn btn-outline-primary">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% if member.linkedin_profile %}
+                        <a href="{{ member.linkedin_profile }}" class="btn btn-outline-primary" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% if member.twitter_profile %}
+                        <a href="{{ member.twitter_profile }}" class="btn btn-outline-primary" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-users fa-3x mb-3 text-muted"></i>
+                <p class="lead">No team members to display.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Team Stats Section -->
+    <section class="team-stats">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3" data-aos="fade-up">
+                    <div class="stat-card">
+                        <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">50+</h3>
+                        <p class="text-muted">Team Members</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card">
+                        <i class="fas fa-project-diagram fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">200+</h3>
+                        <p class="text-muted">Projects Completed</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card">
+                        <i class="fas fa-globe fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">20+</h3>
+                        <p class="text-muted">Countries Reached</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card">
+                        <i class="fas fa-award fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">15+</h3>
+                        <p class="text-muted">Awards Won</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+
+    // Counter animation
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.innerText.replace('+', '');
+        const increment = target / 30;
+        let current = 0;
+
+        const updateCounter = () => {
+            current += increment;
+            if (current < target) {
+                counter.innerText = Math.ceil(current) + '+';
+                setTimeout(updateCounter, 50);
+            } else {
+                counter.innerText = target + '+';
+            }
+        };
+
+        updateCounter();
+    });
+</script>
+{% endblock %} 

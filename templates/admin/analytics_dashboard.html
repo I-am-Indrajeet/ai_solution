@@ -1,0 +1,254 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static jazzmin custom_filters %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .chart-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        min-height: 400px;
+    }
+    .trend-indicator {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+    }
+    .trend-up { color: #28a745; }
+    .trend-down { color: #dc3545; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Quick Stats -->
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h3>{{ total_messages }}</h3>
+                <p>Total Messages</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-envelope fa-2x text-info"></i>
+            </div>
+        </div>
+        <div class="trend-indicator {% if message_growth > 0 %}trend-up{% else %}trend-down{% endif %}">
+            <i class="fas {% if message_growth > 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+            {{ message_growth_abs }} today
+        </div>
+    </div>
+    <!-- Similar cards for blogs, services, events -->
+</div>
+
+<!-- Charts Row 1 -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Message Trends</h4>
+            <canvas id="messagesTrendChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Daily Activity Distribution</h4>
+            <canvas id="hourlyActivityChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Top Blog Categories</h4>
+            <canvas id="blogCategoriesChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Service Performance</h4>
+            <canvas id="servicePerformanceChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 3 -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Event Registration Analytics</h4>
+            <canvas id="eventAnalyticsChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Geographic Distribution</h4>
+            <canvas id="geoDistributionChart"></canvas>
+        </div>
+    </div>
+</div>
+
+{% block extrajs %}
+<script>
+Chart.register(ChartDataLabels);
+
+// Message Trends Chart
+new Chart(document.getElementById('messagesTrendChart'), {
+    type: 'line',
+    data: {
+        labels: {{ messages_by_month|safe }}.map(item => new Date(item[0]).toLocaleDateString()),
+        datasets: [{
+            label: 'Messages',
+            data: {{ messages_by_month|safe }}.map(item => item[1]),
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.3,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: { display: true, text: 'Monthly Message Trends' },
+            datalabels: { display: false }
+        }
+    }
+});
+
+// Hourly Activity Chart
+new Chart(document.getElementById('hourlyActivityChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ messages_by_hour|safe }}.map(item => `${item[0]}:00`),
+        datasets: [{
+            label: 'Activity',
+            data: {{ messages_by_hour|safe }}.map(item => item[1]),
+            backgroundColor: 'rgba(54, 162, 235, 0.8)'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: { display: true, text: 'Hourly Activity Distribution' }
+        }
+    }
+});
+
+// Blog Categories Chart
+new Chart(document.getElementById('blogCategoriesChart'), {
+    type: 'doughnut',
+    data: {
+        labels: {{ blog_categories|safe }}.map(item => item.categories__name),
+        datasets: [{
+            data: {{ blog_categories|safe }}.map(item => item.count),
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(153, 102, 255)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            datalabels: {
+                formatter: (value, ctx) => {
+                    let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                    let percentage = (value * 100 / sum).toFixed(1) + "%";
+                    return percentage;
+                },
+                color: '#fff'
+            }
+        }
+    }
+});
+
+// Service Performance Chart
+new Chart(document.getElementById('servicePerformanceChart'), {
+    type: 'radar',
+    data: {
+        labels: {{ service_stats|safe }}.map(item => item.category__name),
+        datasets: [{
+            label: 'Services',
+            data: {{ service_stats|safe }}.map(item => item.count),
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgb(75, 192, 192)',
+            pointBackgroundColor: 'rgb(75, 192, 192)'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: { display: true, text: 'Service Category Performance' }
+        }
+    }
+});
+
+// Event Analytics Chart
+new Chart(document.getElementById('eventAnalyticsChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ event_stats|safe }}.map(item => item.title),
+        datasets: [{
+            label: 'Registrations',
+            data: {{ event_stats|safe }}.map(item => item.registration_count),
+            backgroundColor: 'rgba(153, 102, 255, 0.8)'
+        }]
+    },
+    options: {
+        responsive: true,
+        indexAxis: 'y',
+        plugins: {
+            title: { display: true, text: 'Event Registration Distribution' }
+        }
+    }
+});
+
+// Geographic Distribution Chart
+new Chart(document.getElementById('geoDistributionChart'), {
+    type: 'polarArea',
+    data: {
+        labels: {{ geo_distribution|safe }}.map(item => item.event__location),
+        datasets: [{
+            data: {{ geo_distribution|safe }}.map(item => item.count),
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 205, 86, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(153, 102, 255, 0.8)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: { display: true, text: 'Geographic Distribution' }
+        }
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 

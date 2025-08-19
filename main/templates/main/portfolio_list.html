@@ -1,0 +1,191 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Past Portfolios | AI Solutions{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<style>
+    .portfolio-hero {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        padding: 100px 0;
+        margin-bottom: 80px;
+    }
+
+    .portfolio-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .portfolio-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .portfolio-image {
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .portfolio-card:hover .portfolio-image {
+        transform: scale(1.05);
+    }
+
+    .portfolio-stats {
+        background: #f8f9fa;
+        padding: 80px 0;
+        margin: 80px 0;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 30px;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .portfolio-hero h1,
+    .portfolio-hero .lead {
+        color: #007bff !important;
+    }
+
+    .features-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .features-list li {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Portfolio Hero Section -->
+<section class="portfolio-hero text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4 text-primary">Past Portfolios</h1>
+                <p class="lead mb-4 text-primary">Explore our successful AI implementations and innovative solutions that have transformed businesses.</p>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <img src="{% static 'images/portfolio-hero.svg' %}" alt="Portfolio Hero" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Portfolio Grid -->
+    <div class="row g-4">
+        {% for portfolio in portfolios %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 200 %}">
+            <div class="portfolio-card h-100">
+                {% if portfolio.image %}
+                <div class="position-relative">
+                    <img src="{{ portfolio.image.url }}" class="portfolio-image w-100" alt="{{ portfolio.title }}">
+                    <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                        <h5 class="text-white mb-0">{{ portfolio.title }}</h5>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{ portfolio.description }}</p>
+                    
+                    <div class="features mt-4">
+                        <h3 class="h5 mb-3">Key Features:</h3>
+                        <ul class="features-list">
+                            {% for feature in portfolio.features %}
+                            <li>
+                                {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-folder-open fa-3x mb-3 text-muted"></i>
+                <p class="lead">No portfolios available at the moment.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Portfolio Stats Section -->
+    <section class="portfolio-stats">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3" data-aos="fade-up">
+                    <div class="stat-card">
+                        <i class="fas fa-project-diagram fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">100+</h3>
+                        <p class="text-muted">Projects Delivered</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card">
+                        <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">500+</h3>
+                        <p class="text-muted">Happy Clients</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card">
+                        <i class="fas fa-code-branch fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">1000+</h3>
+                        <p class="text-muted">AI Solutions</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card">
+                        <i class="fas fa-clock fa-2x text-primary mb-3"></i>
+                        <h3 class="counter">10+</h3>
+                        <p class="text-muted">Years Experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+
+    // Counter animation
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.innerText.replace('+', '');
+        const increment = target / 30;
+        let current = 0;
+
+        const updateCounter = () => {
+            current += increment;
+            if (current < target) {
+                counter.innerText = Math.ceil(current) + '+';
+                setTimeout(updateCounter, 50);
+            } else {
+                counter.innerText = target + '+';
+            }
+        };
+
+        updateCounter();
+    });
+</script>
+{% endblock %} 

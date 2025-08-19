@@ -1,0 +1,94 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Demo Video - AI Solution{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Video Title -->
+            <h1 class="text-center mb-5">AI Solution Demo Video</h1>
+            
+            <!-- Video Player Card -->
+            <div class="card shadow-lg">
+                <div class="card-body p-0">
+                    <!-- Video Player -->
+                    <div class="video-container position-relative" style="padding-top: 56.25%;">
+                        <video id="demoVideo" class="position-absolute top-0 start-0 w-100 h-100" controls>
+                            <source src="{% static 'videos/demo.mp4' %}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    
+                    <!-- Video Controls -->
+                    <div class="p-4">
+                        <h3 class="mb-3">Product Demo</h3>
+                        <p class="text-muted">Watch our comprehensive demo to learn about our AI solutions and features.</p>
+                        
+                        <!-- Custom Controls -->
+                        <div class="d-flex gap-3 mt-4">
+                            <button class="btn btn-primary" onclick="document.getElementById('demoVideo').play()">
+                                <i class="fas fa-play me-2"></i>Play
+                            </button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('demoVideo').pause()">
+                                <i class="fas fa-pause me-2"></i>Pause
+                            </button>
+                            <button class="btn btn-info" onclick="document.getElementById('demoVideo').currentTime = 0">
+                                <i class="fas fa-redo me-2"></i>Restart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video Description -->
+            <div class="mt-5">
+                <h4>About This Demo</h4>
+                <p>This comprehensive demo showcases our AI solution's key features and capabilities. Watch to learn how our platform can transform your business operations.</p>
+                
+                <!-- Key Points -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-check-circle text-success me-2"></i>Key Features</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-dot-circle text-primary me-2"></i>AI-Powered Analytics</li>
+                            <li class="mb-2"><i class="fas fa-dot-circle text-primary me-2"></i>Real-time Processing</li>
+                            <li class="mb-2"><i class="fas fa-dot-circle text-primary me-2"></i>Automated Workflows</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-star text-warning me-2"></i>Benefits</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-dot-circle text-primary me-2"></i>Increased Efficiency</li>
+                            <li class="mb-2"><i class="fas fa-dot-circle text-primary me-2"></i>Cost Reduction</li>
+                            <li class="mb-2"><i class="fas fa-dot-circle text-primary me-2"></i>Better Decision Making</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.video-container {
+    background: #000;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+}
+
+video {
+    border-radius: 8px 8px 0 0;
+    object-fit: cover;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,167 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}AI Solutions & Services{% endblock %}
+
+{% block content %}
+<!-- Services Hero -->
+<section class="page-hero bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+                        <li class="breadcrumb-item active">Services</li>
+                    </ol>
+                </nav>
+                <h1 class="display-4 fw-bold mb-4">Our AI Services</h1>
+                <p class="lead mb-4">Discover our comprehensive range of AI solutions designed to transform your business</p>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <img src="{% static 'images/services-hero.svg' %}" alt="AI Services" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Categories -->
+<section class="service-categories py-5">
+    <div class="container">
+        <div class="row g-4">
+            {% for category in service_categories %}
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|default:'0' }}00">
+                <div class="category-card">
+                    <div class="category-icon {{ category.color_class|default:'blue' }}">
+                        <i class="fas {{ category.icon|default:'fa-cog' }}"></i>
+                    </div>
+                    <h4>{{ category.name }}</h4>
+                    {% if category.services.all %}
+                    <ul class="category-list">
+                        {% for service in category.services.all %}
+                        <li><a href="{% url 'main:service_detail' service.slug %}">{{ service.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Detailed Services -->
+<section class="detailed-services py-5 bg-light">
+    <div class="container">
+        {% for service in services %}
+        <div class="service-detail-card {% if forloop.counter|divisibleby:2 %}bg-white{% endif %}" data-aos="fade-up">
+            <div class="row align-items-center {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
+                <div class="col-lg-6">
+                    <div class="service-content p-5">
+                        {% if service.category %}
+                        <span class="service-badge">{{ service.category.name }}</span>
+                        {% endif %}
+                        <h2 class="mb-4">{{ service.title }}</h2>
+                        <p class="lead mb-4">{{ service.description }}</p>
+                        {% if service.features %}
+                        <div class="service-features mb-4">
+                            {% for feature in service.features %}
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-primary"></i>
+                                <span>{{ feature }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="service-cta">
+                            <a href="{% url 'main:service_detail' service.slug %}" class="btn btn-primary me-3">Learn More</a>
+                            <a href="{% url 'main:contact' %}" class="btn btn-outline-primary">Get Quote</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="service-image p-5">
+                        {% if service.icon %}
+                        <img src="{{ service.icon.url }}" alt="{{ service.title }}" class="img-fluid rounded-3 shadow">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Technologies -->
+<section class="technologies py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h6 class="text-primary fw-bold">OUR TECH STACK</h6>
+            <h2 class="display-5 fw-bold">Technologies We Use</h2>
+            <p class="text-muted">We leverage cutting-edge technologies to deliver exceptional results</p>
+        </div>
+        <div class="tech-grid" data-aos="fade-up">
+            {% for tech in technologies %}
+            <div class="tech-item">
+                {% if tech.logo %}
+                <img src="{{ tech.logo.url }}" alt="{{ tech.name }}">
+                {% endif %}
+                <span>{{ tech.name }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h6 class="text-primary fw-bold">FAQ</h6>
+            <h2 class="display-5 fw-bold">Frequently Asked Questions</h2>
+            <p class="text-muted">Find answers to common questions about our services</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    {% for faq in faqs %}
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|default:'0' }}00">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#faq{{ forloop.counter }}">
+                                {{ faq.question }}
+                            </button>
+                        </h3>
+                        <div id="faq{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                             data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                {{ faq.answer }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="cta-card" data-aos="zoom-in">
+                    <h2 class="display-5 fw-bold text-white mb-4">Ready to Get Started?</h2>
+                    <p class="lead text-white mb-4">Contact us today to discuss how our AI solutions can help your business grow</p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'main:contact' %}" class="btn btn-light btn-lg me-3">Contact Us</a>
+                        <a href="#" class="btn btn-outline-light btn-lg">Schedule Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

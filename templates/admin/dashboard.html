@@ -1,0 +1,169 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .chart-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Total Messages</h3>
+        <p class="h2">{{ total_messages }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Total Blogs</h3>
+        <p class="h2">{{ total_blogs }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Total Services</h3>
+        <p class="h2">{{ total_services }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Total Events</h3>
+        <p class="h2">{{ total_events }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="messagesChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="blogCategoriesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="serviceStatsChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="eventRegistrationsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Messages Chart
+    new Chart(document.getElementById('messagesChart'), {
+        type: 'line',
+        data: {
+            labels: {{ messages_by_date|safe }}.map(item => item.month),
+            datasets: [{
+                label: 'Messages',
+                data: {{ messages_by_date|safe }}.map(item => item.count),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Messages Over Time'
+                }
+            }
+        }
+    });
+
+    // Blog Categories Chart
+    new Chart(document.getElementById('blogCategoriesChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ blog_categories|safe }}.map(item => item.categories__name),
+            datasets: [{
+                data: {{ blog_categories|safe }}.map(item => item.count),
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Blog Categories Distribution'
+                }
+            }
+        }
+    });
+
+    // Service Stats Chart
+    new Chart(document.getElementById('serviceStatsChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ service_stats|safe }}.map(item => item.category__name),
+            datasets: [{
+                label: 'Services',
+                data: {{ service_stats|safe }}.map(item => item.count),
+                backgroundColor: 'rgb(75, 192, 192)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Services by Category'
+                }
+            }
+        }
+    });
+
+    // Event Registrations Chart
+    new Chart(document.getElementById('eventRegistrationsChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ event_registrations|safe }}.map(item => item.event__title),
+            datasets: [{
+                label: 'Registrations',
+                data: {{ event_registrations|safe }}.map(item => item.count),
+                backgroundColor: 'rgb(153, 102, 255)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Event Registrations'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,484 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Solution{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar bg-primary text-white py-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span class="me-3"><i class="fas fa-envelope me-2"></i>info@ai-solutions.co.uk</span>
+                    <span><i class="fas fa-phone me-2"></i>+44 191 555 0123</span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this right after the top bar -->
+    <div class="announcement-bar" data-aos="fade-down">
+        <div class="container">
+            <div class="announcement-slider">
+                <div class="announcement-item">🎉 Special Offer: Get 20% off on AI Consulting Services!</div>
+                <div class="announcement-item">🚀 New Feature: Try our AI Demo Platform</div>
+                <div class="announcement-item">📢 Join our upcoming AI Workshop - Register Now!</div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    @keyframes slide {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    .announcement-bar {
+        overflow: hidden;
+        padding: 8px 0;
+    }
+
+    .announcement-slider {
+        display: flex;
+        white-space: nowrap;
+    }
+
+    .announcement-item {
+        display: inline-block;
+        padding: 0 50px;
+        animation: slide 50s linear infinite; /* Made even slower: 50 seconds per cycle */
+    }
+
+    .announcement-slider:hover .announcement-item {
+        animation-play-state: paused;
+    }
+    </style>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'main:home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="AI Solution" height="40">
+                AI Solution
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Primary Navigation Items -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'main:home' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:service_list' %}">
+                            <i class="fas fa-cogs"></i> Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'main:about' %}">
+                            <i class="fas fa-info-circle"></i> About Us
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:contact' %}">
+                            <i class="fas fa-envelope"></i> Contact
+                        </a>
+                    </li>
+                    
+                    <!-- Company Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-building"></i> Company
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'main:team_list' %}">
+                                    <i class="fas fa-users"></i> Our Team
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'main:testimonial_list' %}">
+                                    <i class="fas fa-star"></i> Testimonials
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'main:portfolio_list' %}">
+                                    <i class="fas fa-briefcase"></i> Past Portfolios
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Resources Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-book"></i> Resources
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'main:blog_list' %}">
+                                    <i class="fas fa-blog"></i> Blog
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'main:event_list' %}">
+                                    <i class="fas fa-calendar"></i> Events
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'main:gallery_list' %}">
+                                    <i class="fas fa-images"></i> Gallery
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Newsletter Section -->
+    <div class="newsletter-section py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h3>Stay Updated with AI Trends</h3>
+                    <p class="text-muted">Subscribe to our newsletter for the latest updates and insights.</p>
+                    <form id="newsletterForm" class="newsletter-form">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="email" class="form-control" name="email" id="newsletterEmail" placeholder="Enter your email" required>
+                            <button class="btn btn-primary" type="submit">
+                                Subscribe <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                        <div id="newsletterMessage" class="mt-3" style="display: none;"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('newsletterEmail').value;
+        const messageDiv = document.getElementById('newsletterMessage');
+        const form = this;
+        
+        fetch('{% url "main:newsletter_signup" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `email=${encodeURIComponent(email)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            messageDiv.style.display = 'block';
+            if (data.status === 'success') {
+                messageDiv.className = 'alert alert-success';
+                form.reset();
+            } else {
+                messageDiv.className = 'alert alert-danger';
+            }
+            messageDiv.textContent = data.message;
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        })
+        .catch(error => {
+            messageDiv.style.display = 'block';
+            messageDiv.className = 'alert alert-danger';
+            messageDiv.textContent = 'An error occurred. Please try again.';
+        });
+    });
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top bg-dark text-white py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0" data-aos="fade-up">
+                        <h5 class="text-uppercase mb-4">About Us</h5>
+                        <p>AI Solution provides cutting-edge artificial intelligence solutions to transform your business. We combine innovation with expertise to deliver exceptional results.</p>
+                        <div class="mt-4">
+                            <a href="#" class="btn btn-outline-light btn-floating me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="btn btn-outline-light btn-floating me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="btn btn-outline-light btn-floating me-2"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="btn btn-outline-light btn-floating"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+                        <h5 class="text-uppercase mb-4">Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="{% url 'main:service_list' %}" class="text-white"><i class="fas fa-angle-right me-2"></i>Services</a></li>
+                            <li class="mb-2"><a href="{% url 'main:blog_list' %}" class="text-white"><i class="fas fa-angle-right me-2"></i>Blog</a></li>
+                            <li class="mb-2"><a href="{% url 'main:gallery_list' %}" class="text-white"><i class="fas fa-angle-right me-2"></i>Gallery</a></li>
+                            <li class="mb-2"><a href="{% url 'main:contact' %}" class="text-white"><i class="fas fa-angle-right me-2"></i>Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                        <h5 class="text-uppercase mb-4">Services</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#" class="text-white"><i class="fas fa-angle-right me-2"></i>AI Consulting</a></li>
+                            <li class="mb-2"><a href="#" class="text-white"><i class="fas fa-angle-right me-2"></i>Machine Learning</a></li>
+                            <li class="mb-2"><a href="#" class="text-white"><i class="fas fa-angle-right me-2"></i>Data Analytics</a></li>
+                            <li class="mb-2"><a href="#" class="text-white"><i class="fas fa-angle-right me-2"></i>Process Automation</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                        <h5 class="text-uppercase mb-4">Contact Us</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3"><i class="fas fa-home me-2"></i>1 Innovation Way, Sunderland, SR1 3NX, United Kingdom</li>
+                            <li class="mb-3"><i class="fas fa-envelope me-2"></i>info@ai-solutions.co.uk</li>
+                            <li class="mb-3"><i class="fas fa-phone me-2"></i>+44 191 555 0123</li>
+                            <li class="mb-3"><i class="fas fa-clock me-2"></i>Mon - Fri: 9:00 AM - 6:00 PM</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom bg-darker text-white py-3">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-0">&copy; 2024 AI Solution. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <a href="#" class="text-white me-3">Privacy Policy</a>
+                        <a href="#" class="text-white me-3">Terms of Service</a>
+                        <a href="#" class="text-white">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="btn btn-primary back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Back to Top Button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("back-to-top").style.display = "block";
+            } else {
+                document.getElementById("back-to-top").style.display = "none";
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+
+        }
+        
+            function toggleChat() {
+                const popup = document.getElementById('chat-popup');
+                popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+            }
+            
+            // Add smooth scroll behavior
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+    </script>
+    {% block extra_js %}{% endblock %}
+
+    <!-- Chatbot toggle button -->
+    <button id="chatbot-toggle" class="chatbot-toggle">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Chatbot container -->
+    <div id="chatbot-container" class="chatbot-container" style="display: none;">
+        <div class="chatbot-header">
+            <span>AI Assistant</span>
+            <button class="close-btn" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <iframe
+            src="https://www.chatbase.co/chatbot-iframe/h5xhAgKYkNH1EF7Afqoup"
+            width="100%"
+            style="height: calc(100% - 40px);"
+            frameborder="0"
+        ></iframe>
+    </div>
+
+    <!-- Update the styles -->
+    <style>
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 9998;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .chatbot-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 380px;
+            height: 600px;
+            max-height: 70vh;
+            z-index: 9999;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .chatbot-header .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .chatbot-header .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: 90%;
+                height: 80vh;
+                bottom: 85px;
+                right: 5%;
+            }
+
+            .chatbot-toggle {
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+
+    <!-- Add this script before the closing body tag -->
+    <script>
+        // Remove the old toggleChat function if it exists
+        function toggleChatbot() {
+            const container = document.getElementById('chatbot-container');
+            const button = document.getElementById('chatbot-toggle');
+            
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                button.style.display = 'none';
+                // Add animation class
+                container.style.opacity = '0';
+                container.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    container.style.opacity = '1';
+                    container.style.transform = 'translateY(0)';
+                }, 50);
+            } else {
+                container.style.opacity = '0';
+                container.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    container.style.display = 'none';
+                    button.style.display = 'block';
+                }, 300);
+            }
+        }
+
+        // Add click event to the toggle button
+        document.getElementById('chatbot-toggle').addEventListener('click', toggleChatbot);
+    </script>
+</body>
+</html> 

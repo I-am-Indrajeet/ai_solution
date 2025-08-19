@@ -1,0 +1,181 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} | AI Solution{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="event-card p-4 bg-white rounded-3 shadow">
+        <!-- Event Image -->
+        {% if event.featured_image %}
+        <div class="event-image mb-4">
+            <img src="{{ event.featured_image.url }}" class="img-fluid rounded" alt="{{ event.title }}">
+        </div>
+        {% endif %}
+
+        <!-- Event Title -->
+        <h1 class="h2 mb-3">{{ event.title }}</h1>
+
+        <!-- Event Description -->
+        <p class="text-muted mb-4">{{ event.description }}</p>
+
+        <!-- Event Details -->
+        <div class="event-details mb-4">
+            <div class="d-flex flex-column gap-2">
+                <div class="detail-item">
+                    <i class="fas fa-calendar text-primary me-2"></i>
+                    {{ event.date|date:"F d, Y" }}
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                    {{ event.location }}
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-users text-success me-2"></i>
+                    {{ event.max_participants }} spots available
+                </div>
+            </div>
+        </div>
+
+        <!-- Price and Registration -->
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="event-price">
+                {% if event.price %}
+                <span class="text-primary fw-bold">${{ event.price }}</span>
+                {% else %}
+                <span class="text-success">Free Event</span>
+                {% endif %}
+            </div>
+            <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                <i class="fas fa-ticket-alt"></i> Book Now
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registrationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Book Your Spot - {{ event.title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Detailed Event Information -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>About This Event</h4>
+                        <p>{{ event.description }}</p>
+                        
+                        {% if event.highlights.exists %}
+                        <h5 class="mt-4">Event Highlights</h5>
+                        <ul class="list-unstyled">
+                            {% for highlight in event.highlights.all %}
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {{ highlight.text }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="registration-info bg-light p-3 rounded">
+                            <h5>Event Details</h5>
+                            <div class="mb-3">
+                                <i class="fas fa-calendar text-primary me-2"></i>
+                                {{ event.date|date:"F d, Y" }}
+                            </div>
+                            <div class="mb-3">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                {{ event.location }}
+                            </div>
+                            <div class="mb-3">
+                                <i class="fas fa-users text-success me-2"></i>
+                                {{ event.max_participants }} spots available
+                            </div>
+                            <div class="registration-section">
+                                <form id="registrationForm" class="needs-validation" novalidate>
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Register Now</button>
+                                </form>
+                                <div id="registrationMessage" class="alert mt-3" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.event-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.detail-item {
+    font-size: 1.1rem;
+}
+
+.event-price {
+    font-size: 1.2rem;
+}
+
+.btn-primary {
+    border-radius: 20px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const messageDiv = document.getElementById('registrationMessage');
+    const formData = new FormData(form);
+
+    fetch('{% url "main:event_registration" event.pk %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        messageDiv.style.display = 'block';
+        if (data.status === 'success') {
+            messageDiv.className = 'alert alert-success mt-3';
+            form.reset();
+        } else {
+            messageDiv.className = 'alert alert-danger mt-3';
+        }
+        messageDiv.textContent = data.message;
+    })
+    .catch(error => {
+        messageDiv.style.display = 'block';
+        messageDiv.className = 'alert alert-danger mt-3';
+        messageDiv.textContent = 'An error occurred. Please try again.';
+    });
+});
+</script>
+{% endblock %}
+{% endblock content %} 

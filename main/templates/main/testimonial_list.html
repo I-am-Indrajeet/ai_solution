@@ -1,0 +1,88 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Client Testimonials | AI Solutions{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="events-hero mb-5 text-center py-5 bg-light rounded">
+        <h1 class="display-4 mb-3">Client Testimonials</h1>
+        <p class="lead mb-4">Discover what our clients say about their experience with our AI solutions</p>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-effect">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="testimonial-avatar me-3">
+                                {% if testimonial.client_photo %}
+                                <img src="{{ testimonial.client_photo.url }}" alt="{{ testimonial.client_name }}" 
+                                     class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                <div class="avatar-placeholder rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                     style="width: 50px; height: 50px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">{{ testimonial.client_name }}</h5>
+                                <p class="text-muted small mb-0">{{ testimonial.company }}</p>
+                            </div>
+                        </div>
+
+                        {% if testimonial.project_name %}
+                        <div class="mb-2">
+                            <span class="badge bg-primary">{{ testimonial.project_name }}</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="rating mb-2">
+                            {% with ''|center:5 as range %}
+                            {% for _ in range %}
+                                {% if forloop.counter <= testimonial.rating %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% elif forloop.counter|add:"-0.5" <= testimonial.rating %}
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="ms-2 text-muted">({{ testimonial.rating }})</span>
+                            {% endwith %}
+                        </div>
+
+                        <p class="card-text">{{ testimonial.content }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No testimonials available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<style>
+.hover-effect {
+    transition: all 0.3s ease;
+}
+
+.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.events-hero {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,126 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{{ service.title }} - AI Solutions{% endblock %}
+
+{% block content %}
+<!-- Service Hero Section -->
+<section class="service-hero py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'main:service_list' %}">Services</a></li>
+                        <li class="breadcrumb-item active">{{ service.title }}</li>
+                    </ol>
+                </nav>
+                {% if service.category %}
+                <span class="service-badge mb-3">{{ service.category.name }}</span>
+                {% endif %}
+                <h1 class="display-4 fw-bold mb-4">{{ service.title }}</h1>
+                <p class="lead mb-4">{{ service.short_description }}</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'main:contact' %}" class="btn btn-primary btn-lg">Get Started</a>
+                    <a href="#service-features" class="btn btn-outline-primary btn-lg">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                {% if service.icon %}
+                <img src="{{ service.icon.url }}" alt="{{ service.title }}" class="img-fluid rounded-3 shadow">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Description -->
+<section class="service-description py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="service-content" data-aos="fade-up">
+                    {{ service.description|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Features -->
+<section id="service-features" class="service-features py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        <div class="row g-4">
+            {% if service.features %}
+                {% for feature in service.features %}
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>{{ feature }}</h3>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h2 class="mb-4">Why Choose Our {{ service.title }}?</h2>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <i class="fas fa-rocket text-primary"></i>
+                        <div>
+                            <h4>Accelerated Development</h4>
+                            <p>Fast and efficient implementation of solutions</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-shield-alt text-primary"></i>
+                        <div>
+                            <h4>Secure & Reliable</h4>
+                            <p>Enterprise-grade security measures</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-chart-line text-primary"></i>
+                        <div>
+                            <h4>Scalable Solutions</h4>
+                            <p>Grows with your business needs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="benefits-image">
+                    <img src="{% static 'images/benefits.svg' %}" alt="Benefits" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 mb-4">Ready to Transform Your Business?</h2>
+                <p class="lead mb-4">Get in touch with us to discuss how our {{ service.title }} can help you achieve your goals</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'main:contact' %}" class="btn btn-light btn-lg">Contact Us</a>
+                    <a href="#" class="btn btn-outline-light btn-lg">Schedule Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Events - AI Solution{% endblock %}
+
+{% block content %}
+<section class="events-section py-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Events</h1>
+        
+        <!-- Event Filters -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="workshop">Workshops</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="conference">Conferences</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="webinar">Webinars</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="eventSearch" placeholder="Search events...">
+            </div>
+        </div>
+
+        <!-- Events List -->
+        <div class="row">
+            {% for event in events %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 event-card" data-event-type="{{ event.event_type }}">
+                    {% if event.featured_image %}
+                    <img src="{{ event.featured_image.url }}" class="card-img-top" alt="{{ event.title }}">
+                    {% else %}
+                    <img src="{% static 'img/default-event.jpg' %}" class="card-img-top" alt="Default Event Image">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text">{{ event.description|truncatewords:30 }}</p>
+                        
+                        <div class="event-details">
+                            <p><i class="fas fa-calendar"></i> {{ event.date|date:"F j, Y" }}</p>
+                            <p><i class="fas fa-clock"></i> {{ event.date|date:"g:i A" }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                        </div>
+
+                        {% if event.is_upcoming %}
+                        <div class="badge bg-success mb-2">Upcoming</div>
+                        {% endif %}
+                        
+                        <div class="event-type-badge badge bg-primary mb-2">
+                            {{ event.get_event_type_display }}
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <a href="{% url 'main:event_detail' event.pk %}" class="btn btn-primary">Learn More</a>
+                        {% comment %}
+                        Removed Register Now button from cards to simplify the flow and direct users through the detail page
+                        {% if event.is_upcoming %}
+                        <a href="{% url 'main:event_registration' event.id %}" class="btn btn-outline-primary">Register</a>
+                        {% endif %}
+                        {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center">No events found.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .event-card {
+        transition: transform 0.3s ease;
+    }
+    .event-card:hover {
+        transform: translateY(-5px);
+    }
+    .event-details {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .event-details i {
+        width: 20px;
+        color: #007bff;
+    }
+    .event-type-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Event type filtering
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const eventCards = document.querySelectorAll('.event-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filterValue = this.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter events
+            eventCards.forEach(card => {
+                if (filterValue === 'all' || card.getAttribute('data-event-type') === filterValue) {
+                    card.closest('.col-md-6').style.display = '';
+                } else {
+                    card.closest('.col-md-6').style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('eventSearch');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        eventCards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const description = card.querySelector('.card-text').textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                card.closest('.col-md-6').style.display = '';
+            } else {
+                card.closest('.col-md-6').style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 
